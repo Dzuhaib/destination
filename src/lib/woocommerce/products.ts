@@ -31,7 +31,20 @@ interface StoreProduct {
   variations: Array<{ id: number }> | number[]; average_rating: string; review_count: number; is_featured: boolean;
 }
 
-const stripHtml = (value: string) => value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+const decodeEntities = (value: string) => value
+  .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+  .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+  .replace(/&amp;/g, "&")
+  .replace(/&ndash;/g, "–")
+  .replace(/&mdash;/g, "—")
+  .replace(/&nbsp;/g, " ")
+  .replace(/&quot;/g, '"')
+  .replace(/&apos;/g, "'")
+  .replace(/&lt;/g, "<")
+  .replace(/&gt;/g, ">");
+
+const cleanText = (value: string) => decodeEntities(value).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+const stripHtml = cleanText;
 
 const money = (raw: string, prices: StoreMoney): Money => {
   const minorUnit = prices.currency_minor_unit;
@@ -49,7 +62,7 @@ const normalizeImage = (image: StoreImage): ProductImage => ({ ...image, alt: im
 
 export const normalizeProduct = (raw: StoreProduct): Product => ({
   id: raw.id,
-  name: raw.name,
+  name: cleanText(raw.name),
   slug: raw.slug,
   permalink: raw.permalink,
   sku: raw.sku,
@@ -66,7 +79,7 @@ export const normalizeProduct = (raw: StoreProduct): Product => ({
   purchasable: raw.is_purchasable,
   stockStatus: raw.is_in_stock ? "in-stock" : "out-of-stock",
   images: raw.images.map(normalizeImage),
-  categories: raw.categories.map((category) => ({ ...category, count: category.count || 0, image: category.image ? normalizeImage(category.image) : null })),
+  categories: raw.categories.map((category) => ({ ...category, name: cleanText(category.name), count: category.count || 0, image: category.image ? normalizeImage(category.image) : null })),
   tags: raw.tags,
   attributes: raw.attributes.map((attribute) => ({
     id: attribute.id, name: attribute.name, taxonomy: attribute.taxonomy,
@@ -114,7 +127,7 @@ export async function getCategories(): Promise<ProductCategory[]> {
     query: { per_page: 100, hide_empty: true }, cacheTags: ["categories"], revalidate: 900,
   });
   return data.map((category) => ({
-    id: category.id, name: category.name, slug: category.slug, count: category.count || 0,
+    id: category.id, name: cleanText(category.name), slug: category.slug, count: category.count || 0,
     image: category.image ? normalizeImage(category.image) : null,
   }));
 }
