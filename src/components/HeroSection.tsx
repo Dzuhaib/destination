@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const slides = [
   { src: "/hero.png", alt: "Destination Wholesale professional aesthetics products" },
-  { src: "/Hero 2.png", alt: "Destination Wholesale product collection" },
+  { src: "/hero-2.png", alt: "Destination Wholesale product collection" },
 ];
 
 export default function HeroSection() {
