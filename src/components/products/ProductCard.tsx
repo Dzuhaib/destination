@@ -22,7 +22,8 @@ export default function ProductCard({ product }: { product: Product }) {
     </Link>
     <div className="flex flex-1 flex-col p-5">
       <p className="text-[10px] font-bold uppercase tracking-[.2em] text-gray-500">{product.categories[0]?.name || "Professional supplies"}</p>
-      <Link href={`/product/${product.slug}`} className="mt-2 text-lg font-semibold leading-snug hover:text-[#a6549e]">{product.name}</Link>
+      <Link href={`/product/${product.slug}`} className="product-card-title mt-2 text-lg font-semibold leading-snug hover:text-[#a6549e]">{product.name}</Link>
+      <Link href={`/product/${product.slug}`} className="product-read-more">Read more</Link>
       {product.sku && <p className="mt-2 text-xs text-gray-500">SKU: {product.sku}</p>}
       <div className="mt-auto flex items-end justify-between gap-3 pt-6">
         <div><p className="text-lg font-bold">{product.prices.price.formatted}</p><p className="text-xs text-gray-500">{product.stockStatus === "in-stock" ? "In stock" : "Out of stock"}</p></div>
