@@ -1,0 +1,3 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getProducts } from "@/lib/woocommerce/products";
+export async function GET(request: NextRequest) { const query = request.nextUrl.searchParams.get("q")?.trim() || ""; if (query.length < 2) return NextResponse.json({ items: [] }); try { const result = await getProducts({ search: query, perPage: 6, orderBy: "popularity", order: "desc" }); return NextResponse.json({ items: result.items.map((product) => ({ id: product.id, name: product.name, slug: product.slug, price: product.prices.price.formatted, image: product.images[0]?.src || null })) }); } catch { return NextResponse.json({ items: [] }); } }
