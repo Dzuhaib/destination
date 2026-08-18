@@ -19,7 +19,7 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
   const related = await getProducts({ category: product.categories[0] ? String(product.categories[0].id) : undefined, perPage: 5 }).catch(() => ({ items: [], total: 0, totalPages: 0, page: 1 }));
   const schema = { "@context": "https://schema.org", "@type": "Product", name: product.name, sku: product.sku || undefined, image: product.images.map((image) => image.src), description: product.summary, offers: { "@type": "Offer", url: `${env.siteUrl}/product/${product.slug}`, priceCurrency: product.prices.price.currencyCode, price: product.prices.price.value, availability: product.stockStatus === "in-stock" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" } };
-  return <div className="min-h-screen bg-white pb-20 pt-32">
+  return <div className="product-page min-h-screen bg-white pb-20">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
     <div className="container-custom"><nav className="py-6 text-sm text-gray-500"><Link href="/">Home</Link> / <Link href="/shop">Shop</Link> / <span className="text-black">{product.name}</span></nav>
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
