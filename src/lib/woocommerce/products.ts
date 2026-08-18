@@ -21,7 +21,7 @@ interface StoreMoney {
 }
 
 interface StoreImage { id: number; src: string; thumbnail: string; alt: string }
-interface StoreCategory { id: number; name: string; slug: string; count?: number; image?: StoreImage | null }
+interface StoreCategory { id: number; name: string; slug: string; parent?: number; count?: number; image?: StoreImage | null }
 interface StoreProduct {
   id: number; name: string; slug: string; permalink: string; sku: string; type: string;
   short_description: string; description: string; prices: StoreMoney; price_html: string;
@@ -127,7 +127,7 @@ export async function getCategories(): Promise<ProductCategory[]> {
     query: { per_page: 100, hide_empty: true }, cacheTags: ["categories"], revalidate: 900,
   });
   return data.map((category) => ({
-    id: category.id, name: cleanText(category.name), slug: category.slug, count: category.count || 0,
+    id: category.id, parent: category.parent || 0, name: cleanText(category.name), slug: category.slug, count: category.count || 0,
     image: category.image ? normalizeImage(category.image) : null,
   }));
 }

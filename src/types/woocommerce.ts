@@ -15,6 +15,7 @@ export interface ProductImage {
 
 export interface ProductCategory {
   id: number;
+  parent?: number;
   name: string;
   slug: string;
   count: number;
