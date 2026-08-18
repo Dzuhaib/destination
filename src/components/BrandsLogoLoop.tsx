@@ -1,6 +1,7 @@
 "use client";
 
-import LogoLoop from "@/components/LogoLoop";
+import LogoLoopComponent from "@/components/LogoLoop";
+const LogoLoop = LogoLoopComponent as React.ComponentType<Record<string, unknown>>;
 
 export default function BrandsLogoLoop({ brands }: { brands: Array<{ name: string; slug: string }> }) {
   const logos = brands.map((brand) => ({
